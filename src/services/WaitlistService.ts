@@ -60,7 +60,7 @@ export class WaitlistService {
       // Insert new signup
       const insertResult = await client.query(
         `INSERT INTO waitlist_signups 
-         (name, email, phone, city, ref_code, referred_by, referral_count, referral_tier)
+         (name, email, phone, city, ref_code, referred_by, referrals_count, referral_tier)
          VALUES ($1, $2, $3, $4, $5, $6, 0, 'none')
          RETURNING *`,
         [input.name, input.email, input.phone || null, input.city || null, referralCode, input.referred_by || null]
@@ -72,12 +72,12 @@ export class WaitlistService {
       if (input.referred_by) {
         await client.query(
           `UPDATE waitlist_signups 
-           SET referral_count = referral_count + 1,
+           SET referrals_count = referrals_count + 1,
                referral_tier = CASE
-                 WHEN referral_count + 1 >= 50 THEN 'diamond'
-                 WHEN referral_count + 1 >= 20 THEN 'gold'
-                 WHEN referral_count + 1 >= 10 THEN 'silver'
-                 WHEN referral_count + 1 >= 3 THEN 'bronze'
+                 WHEN referrals_count + 1 >= 50 THEN 'diamond'
+                 WHEN referrals_count + 1 >= 20 THEN 'gold'
+                 WHEN referrals_count + 1 >= 10 THEN 'silver'
+                 WHEN referrals_count + 1 >= 3 THEN 'bronze'
                  ELSE 'none'
                END
            WHERE ref_code = $1`,
@@ -145,7 +145,7 @@ export class WaitlistService {
           COUNT(*) as total,
           COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '1 day') as today,
           COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '7 days') as this_week,
-          SUM(referral_count) as total_referrals,
+          SUM(referrals_count) as total_referrals,
           COUNT(*) FILTER (WHERE referral_tier = 'diamond') as diamond_users,
           COUNT(*) FILTER (WHERE referral_tier = 'gold') as gold_users,
           COUNT(*) FILTER (WHERE referral_tier = 'silver') as silver_users,

@@ -58,7 +58,7 @@ export class ReferralService {
     try {
       const result = await pool.query(
         `SELECT 
-          email, name, ref_code, referral_count, referral_tier, created_at
+          email, name, ref_code, referrals_count, referral_tier, created_at
          FROM waitlist_signups 
          WHERE ref_code = $1`,
         [referralCode]
@@ -91,10 +91,10 @@ export class ReferralService {
     try {
       const result = await pool.query(
         `SELECT 
-          email, name, ref_code, referral_count, referral_tier, created_at
+          email, name, ref_code, referrals_count, referral_tier, created_at
          FROM waitlist_signups 
-         WHERE referral_count > 0
-         ORDER BY referral_count DESC, created_at ASC
+         WHERE referrals_count > 0
+         ORDER BY referrals_count DESC, created_at ASC
          LIMIT $1`,
         [limit]
       );
