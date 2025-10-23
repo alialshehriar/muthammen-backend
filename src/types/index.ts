@@ -7,7 +7,7 @@ export interface WaitlistSignup {
   ref_code: string;
   referred_by?: string;
   referrals_count: number;
-  referral_tier: 'none' | 'bronze' | 'silver' | 'gold' | 'diamond';
+  reward_tier: 'none' | 'bronze' | 'silver' | 'gold' | 'diamond';
   created_at: Date;
 }
 
@@ -24,7 +24,7 @@ export interface ReferralStats {
   name: string;
   ref_code: string;
   referrals_count: number;
-  referral_tier: string;
+  reward_tier: string;
   created_at: Date;
 }
 
