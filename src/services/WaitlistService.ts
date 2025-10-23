@@ -87,7 +87,7 @@ export class WaitlistService {
 
       // Log event
       await client.query(
-        `INSERT INTO events (event_name, user_email, metadata)
+        `INSERT INTO events (event_name, user_id, event_props)
          VALUES ('waitlist_signup', $1, $2)`,
         [input.email, JSON.stringify({ ref_code: referralCode, referred_by: input.referred_by })]
       );

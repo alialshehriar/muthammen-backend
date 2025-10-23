@@ -26,14 +26,14 @@ export class ReferralService {
 
       // Log the click
       await pool.query(
-        `INSERT INTO referral_clicks (ref_code, ip_address, user_agent)
+        `INSERT INTO referral_clicks (ref_code, ip, user_agent)
          VALUES ($1, $2, $3)`,
         [referralCode, ipAddress || null, userAgent || null]
       );
 
       // Log event
       await pool.query(
-        `INSERT INTO events (event_name, metadata)
+        `INSERT INTO events (event_name, event_props)
          VALUES ('referral_click', $1)`,
         [JSON.stringify({ ref_code: referralCode, ip: ipAddress })]
       );
