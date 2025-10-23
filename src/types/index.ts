@@ -4,7 +4,7 @@ export interface WaitlistSignup {
   email: string;
   phone?: string;
   city?: string;
-  referral_code: string;
+  ref_code: string;
   referred_by?: string;
   referral_count: number;
   referral_tier: 'none' | 'bronze' | 'silver' | 'gold' | 'diamond';
@@ -13,7 +13,7 @@ export interface WaitlistSignup {
 
 export interface ReferralClick {
   id: string;
-  referral_code: string;
+  ref_code: string;
   ip_address?: string;
   user_agent?: string;
   clicked_at: Date;
@@ -22,7 +22,7 @@ export interface ReferralClick {
 export interface ReferralStats {
   email: string;
   name: string;
-  referral_code: string;
+  ref_code: string;
   referral_count: number;
   referral_tier: string;
   created_at: Date;

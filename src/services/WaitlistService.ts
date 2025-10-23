@@ -21,7 +21,7 @@ export class WaitlistService {
 
       // Check if email already exists
       const existingUser = await client.query(
-        'SELECT id, email, referral_code FROM waitlist_signups WHERE email = $1',
+        'SELECT id, email, ref_code FROM waitlist_signups WHERE email = $1',
         [input.email]
       );
 
@@ -40,7 +40,7 @@ export class WaitlistService {
 
       while (codeExists && attempts < 10) {
         const result = await client.query(
-          'SELECT id FROM waitlist_signups WHERE referral_code = $1',
+          'SELECT id FROM waitlist_signups WHERE ref_code = $1',
           [referralCode]
         );
         codeExists = result.rows.length > 0;
@@ -60,7 +60,7 @@ export class WaitlistService {
       // Insert new signup
       const insertResult = await client.query(
         `INSERT INTO waitlist_signups 
-         (name, email, phone, city, referral_code, referred_by, referral_count, referral_tier)
+         (name, email, phone, city, ref_code, referred_by, referral_count, referral_tier)
          VALUES ($1, $2, $3, $4, $5, $6, 0, 'none')
          RETURNING *`,
         [input.name, input.email, input.phone || null, input.city || null, referralCode, input.referred_by || null]
@@ -80,7 +80,7 @@ export class WaitlistService {
                  WHEN referral_count + 1 >= 3 THEN 'bronze'
                  ELSE 'none'
                END
-           WHERE referral_code = $1`,
+           WHERE ref_code = $1`,
           [input.referred_by]
         );
       }
@@ -89,7 +89,7 @@ export class WaitlistService {
       await client.query(
         `INSERT INTO events (event_type, user_email, metadata)
          VALUES ('waitlist_signup', $1, $2)`,
-        [input.email, JSON.stringify({ referral_code: referralCode, referred_by: input.referred_by })]
+        [input.email, JSON.stringify({ ref_code: referralCode, referred_by: input.referred_by })]
       );
 
       await client.query('COMMIT');

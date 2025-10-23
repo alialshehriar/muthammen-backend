@@ -8,11 +8,11 @@ export class ReferralController {
    * Track a referral click
    */
   static async trackClick(req: Request, res: Response) {
-    const { referral_code } = req.body;
+    const { ref_code } = req.body;
     const ipAddress = req.ip || req.headers['x-forwarded-for'] as string;
     const userAgent = req.headers['user-agent'];
 
-    const result = await ReferralService.trackClick(referral_code, ipAddress, userAgent);
+    const result = await ReferralService.trackClick(ref_code, ipAddress, userAgent);
     
     if (!result.success) {
       throw new AppError(result.error || 'Failed to track click', 400);

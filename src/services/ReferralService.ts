@@ -13,7 +13,7 @@ export class ReferralService {
     try {
       // Check if referral code exists
       const codeCheck = await pool.query(
-        'SELECT id FROM waitlist_signups WHERE referral_code = $1',
+        'SELECT id FROM waitlist_signups WHERE ref_code = $1',
         [referralCode]
       );
 
@@ -26,7 +26,7 @@ export class ReferralService {
 
       // Log the click
       await pool.query(
-        `INSERT INTO referral_clicks (referral_code, ip_address, user_agent)
+        `INSERT INTO referral_clicks (ref_code, ip_address, user_agent)
          VALUES ($1, $2, $3)`,
         [referralCode, ipAddress || null, userAgent || null]
       );
@@ -35,7 +35,7 @@ export class ReferralService {
       await pool.query(
         `INSERT INTO events (event_type, metadata)
          VALUES ('referral_click', $1)`,
-        [JSON.stringify({ referral_code: referralCode, ip: ipAddress })]
+        [JSON.stringify({ ref_code: referralCode, ip: ipAddress })]
       );
 
       return {
@@ -58,9 +58,9 @@ export class ReferralService {
     try {
       const result = await pool.query(
         `SELECT 
-          email, name, referral_code, referral_count, referral_tier, created_at
+          email, name, ref_code, referral_count, referral_tier, created_at
          FROM waitlist_signups 
-         WHERE referral_code = $1`,
+         WHERE ref_code = $1`,
         [referralCode]
       );
 
@@ -91,7 +91,7 @@ export class ReferralService {
     try {
       const result = await pool.query(
         `SELECT 
-          email, name, referral_code, referral_count, referral_tier, created_at
+          email, name, ref_code, referral_count, referral_tier, created_at
          FROM waitlist_signups 
          WHERE referral_count > 0
          ORDER BY referral_count DESC, created_at ASC
@@ -119,7 +119,7 @@ export class ReferralService {
     try {
       const result = await pool.query(`
         SELECT 
-          COUNT(DISTINCT referral_code) as total_codes_used,
+          COUNT(DISTINCT ref_code) as total_codes_used,
           COUNT(*) as total_clicks,
           (SELECT COUNT(*) FROM waitlist_signups WHERE referred_by IS NOT NULL) as total_conversions,
           CASE 

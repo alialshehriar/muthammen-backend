@@ -10,7 +10,7 @@ export const WaitlistSignupSchema = z.object({
 });
 
 export const ReferralClickSchema = z.object({
-  referral_code: z.string().min(1, 'Referral code is required'),
+  ref_code: z.string().min(1, 'Referral code is required'),
 });
 
 export type WaitlistSignupInput = z.infer<typeof WaitlistSignupSchema>;
